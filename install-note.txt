@@ -1,0 +1,67 @@
+1� Configurar una rasbperry pi sin monitor ni teclado:
+https://www.innerzaurus.com/diy/raspberry-pi/configurar-una-raspberry-pi-sin-monitor-ni-teclado/
+
+La url anterior tambi�n explica como instalar el servidor vcn pero no dice como
+hacer para que se arranque siempre que arranque la raspberry, para ello seguir esto:
+https://learn.adafruit.com/adafruit-raspberry-pi-lesson-7-remote-control-with-vnc/running-vncserver-at-startup
+
+3� Darle una ip fija a la raspberry (192.168.1.22)
+https://www.modmypi.com/blog/how-to-give-your-raspberry-pi-a-static-ip-address-update
+
+4� Empezar a actualizar el sistema e instalar la infraestructura LAMP (linux apache mysql php-python-perl):
+
+Connect to network:
+apt-get update
+sudo apt-get install apache2
+update-rc.d apache2 enable
+
+// una vez instalado apache desde el navegador se puede acceder a la web http://192.168.1.22/
+
+sudo apt-get install build-essential python-dev python-openssl
+sudo apt-get install python-dev
+sudo apt-get install python-rpi.gpio
+
+// instalar php
+sudo apt-get install rrdtool
+sudo apt-get install gpsd gpsd-clients python-gps
+sudo apt-get install php5
+sudo apt-get install php5-dev
+sudo apt-get install php-pear
+sudo apt-get install libyaml-dev
+sudo pecl install yaml-0.6.3
+sudo apt-get install python-yaml
+sudo apt-get install python-rrdtool
+sudo apt-get install php5-rrd
+
+
+datos para subir a weather underground
+
+http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol?_ga=2.182849263.896432134.1513230476-768433593.1508051891
+
+
+# examples:
+# City within the USA
+# http://api.wunderground.com/api/cac064240e1597b3/geolookup/q/CA/San_Francisco.json
+# City outside of the USA
+# http://api.wunderground.com/api/cac064240e1597b3/geolookup/q/France/Paris.json
+# AutoIP Address Location
+# http://api.wunderground.com/api/cac064240e1597b3/geolookup/q/autoip.json
+# Zip or Postal Code
+# http://api.wunderground.com/api/cac064240e1597b3/geolookup/q/94107.json
+# Airport Code
+# http://api.wunderground.com/api/cac064240e1597b3/geolookup/q/SFO.json
+# Latitude, Longitude Coordinates
+# http://api.wunderground.com/api/cac064240e1597b3/geolookup/q/37.776289,-122.395234.json
+# Personal Weather Station (PWS)
+# http://api.wunderground.com/api/cac064240e1597b3/geolookup/q/pws:KMNCHASK10.json
+
+# http://api.wunderground.com/api/cac064240e1597b3/conditions/q/pws:IGULAEST2.json
+
+
+
+
+
+
+
+
+
