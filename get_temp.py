@@ -11,7 +11,6 @@ def c_to_f(input_temp):
 
 def parse_pws_conditions_json(pws, alb_key):
     # parse json conditions from weather station
-    #with urllib2.urlopen('http://api.wunderground.com/api/'+alb_key+'/conditions/q/pws:'+pws+'.json') as json_string:  
     f = urllib2.urlopen('http://api.wunderground.com/api/'+alb_key+'/conditions/q/pws:'+pws+'.json')
     json_string = f.read()
     parsed_json = json.loads(json_string)
@@ -23,7 +22,6 @@ def read_temp_c_from_pws(parsed_json):
     temp_c = parsed_json['current_observation']['temp_c']
     return temp_c
 
-print("\n\nUploading data to Weather Underground\n\n")
 alb_key = 'cac064240e1597b3'
 pws_1 = 'IGULAEST2'
 pws_2 = 'IGUADALA26'
@@ -46,7 +44,7 @@ print "\nCurrent temperature and humidity in %s is: %s %s" % (location, temp_c, 
 # ============================================================================
 #  Read Weather Underground Configuration Parameters
 # ============================================================================
-print("\nInitializing Weather Underground configuration")
+print("\n\bInitializing Weather Underground configuration\n")
 wu_station_id = Config.STATION_ID
 wu_station_key = Config.STATION_KEY
 if (wu_station_id is None) or (wu_station_key is None):
@@ -66,7 +64,7 @@ WU_URL = "http://weatherstation.wunderground.com/weatherstation/updateweathersta
 # is weather upload enabled (True)?
 if WEATHER_UPLOAD:
     # From http://wiki.wunderground.com/index.php/PWS_-_Upload_Protocol
-    print("Uploading data to Weather Underground")
+    print("\n --> Uploading data to Weather Underground...\n")
     # build a weather data object
     weather_data = {
         "action": "updateraw",
