@@ -21,6 +21,19 @@ def read_temp_c_from_pws(parsed_json):
     # read temperature from a weather station
     temp_c = parsed_json['current_observation']['temp_c']
     return temp_c
+    
+def read_wind_from_pws(parsed_json):
+    # read win direcction from a weather station
+    wind_dir = parsed_json['current_observation']['wind_dir']
+    windspeedmph = parsed_json['current_observation']['wind_mph']
+    windgustmph = parsed_json['current_observation']['wind_gust_mph']
+    return wind_dir, windspeedmph, windgustmph
+    
+def read_rain_from_pws(parsed_json):
+    # read win direcction from a weather station
+    precip_1hr_in = parsed_json['current_observation']['precip_1hr_in']
+    precip_today_in = parsed_json['current_observation']['precip_today_in']
+    return precip_1hr_in, precip_today_in
 
 alb_key = 'cac064240e1597b3'
 pws_1 = 'IGULAEST2'
@@ -32,6 +45,9 @@ json_pws_3 = parse_pws_conditions_json(pws_3,alb_key)
 temp_c_pws_1 = read_temp_c_from_pws(json_pws_1)
 temp_c_pws_2 = read_temp_c_from_pws(json_pws_2)
 temp_c_pws_3 = read_temp_c_from_pws(json_pws_3)
+wind_dir, windspeedmph, windgustmph = read_wind_from_pws(json_pws_1)
+rainin, dailyrainin = read_rain_from_pws(json_pws_1)
+ 
 
 temp_c = (temp_c_pws_1 + temp_c_pws_2 + temp_c_pws_3) / 3
 
@@ -40,6 +56,9 @@ pressure_mb = json_pws_1['current_observation']['pressure_mb']
 hum = json_pws_1['current_observation']['relative_humidity']
 print "\nCurrent temperature and humidity in %s is: %s %s" % (location, temp_c, hum)
 
+#dewpoint = hum^(1/8) * (112 + 0.9 * temp_c) + (0.1 * temp_c - 112)
+hum_float = float(float(hum.strip('%'))/100)
+dewpoint = float((hum_float**(1./8) * (112 + 0.9 * temp_c)) + (0.1 * temp_c) - 112)
 
 # ============================================================================
 #  Read Weather Underground Configuration Parameters
@@ -70,10 +89,15 @@ if WEATHER_UPLOAD:
         "action": "updateraw",
         "ID": wu_station_id,
         "PASSWORD": wu_station_key,
+        "windir": wind_dir,
+        "windspeedmph": windspeedmph,
+        "windgustmph": windgustmph,
+        "rainin": rainin,
+        "dailyrainin": dailyrainin,
         "dateutc": "now",
-        "tempc": temp_c,
         "tempf": str(c_to_f(temp_c)),
         "humidity": hum,
+        "dewptf": dewpoint,
         "baromin": pressure_mb,
     }
     try:
@@ -87,4 +111,22 @@ if WEATHER_UPLOAD:
         print("Exception:", sys.exc_info()[0], SLASH_N)
 else:
     print("Skipping Weather Underground upload")
+    
+    
+# action [action = updateraw]
+# ID [ID as registered by wunderground.com]
+# PASSWORD [PASSWORD registered with this ID]
+# dateutc - [YYYY-MM-DD HH:MM:SS (mysql format)]
+# winddir - [0-360]
+# windspeedmph - [mph]
+# windgustmph - [windgustmph ]
+# humidity - [%]
+# tempf - [temperature F]
+# rainin - [rain in]
+# dailyrainin - [daily rain in accumulated]
+# baromin - [barom in]
+# dewptf- [dewpoint F]
+# weather - [text] -- metar style (+RA) 
+# clouds - [text] -- SKC, FEW, SCT, BKN, OVC
+# softwaretype - [text] ie: vws or weatherdisplay
 
