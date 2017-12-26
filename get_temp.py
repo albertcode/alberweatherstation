@@ -38,7 +38,7 @@ def read_rain_from_pws(parsed_json):
 alb_key = 'cac064240e1597b3'
 pws_1 = 'IGULAEST2'
 pws_2 = 'IGUADALA26'
-pws_3 = 'IGUADALA29'
+pws_3 = 'IMARCHAM2'
 json_pws_1 = parse_pws_conditions_json(pws_1,alb_key)
 json_pws_2 = parse_pws_conditions_json(pws_2,alb_key)
 json_pws_3 = parse_pws_conditions_json(pws_3,alb_key)
