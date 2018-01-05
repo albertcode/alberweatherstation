@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-dth22_sensor = False
+dth22_sensor = True
+WEATHER_UPLOAD = False
+
 import json
 import urllib2
 from config import Config
@@ -70,8 +72,11 @@ if dth22_sensor:
     # to 15 times to get a sensor reading (waiting 2 seconds between each retry).
     while (hum == None and temp_c == None) or n_retries == 15:
         hum, temp_c = Adafruit_DHT.read_retry(sensor, pin)
-        n_retries +=1
+        n_retries += 1
+        print 'Ret: ',n_retries
         sleep(1)
+
+    dewpoint = float((hum**(1./8) * (112 + 0.9 * temp_c)) + (0.1 * temp_c) - 112)
     
 else:
     # DTH22 sensor is disabled
@@ -82,9 +87,9 @@ else:
     temp_c_pws_3 = read_temp_c_from_pws(json_pws_3)
     temp_c = (temp_c_pws_1 + temp_c_pws_2 + temp_c_pws_3) / 3
 
-# Calculate dewpoint as hum^(1/8) * (112 + 0.9 * temp_c) + (0.1 * temp_c - 112)
-hum_float = float(float(hum.strip('%'))/100)
-dewpoint = float((hum_float**(1./8) * (112 + 0.9 * temp_c)) + (0.1 * temp_c) - 112)
+    # Calculate dewpoint as hum^(1/8) * (112 + 0.9 * temp_c) + (0.1 * temp_c - 112)
+    hum_float = float(float(hum.strip('%'))/100)
+    dewpoint = float((hum_float**(1./8) * (112 + 0.9 * temp_c)) + (0.1 * temp_c) - 112)
 print "\nCurrent temperature and humidity in %s is: %s %s" % (location, temp_c, hum)
 
 # ============================================================================
@@ -105,7 +110,6 @@ print('Station ID:', wu_station_id)
 # ========================================================
 # Upload the weather data to Weather Underground
 # ========================================================
-WEATHER_UPLOAD = True
 WU_URL = "http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php"
 # is weather upload enabled (True)?
 if WEATHER_UPLOAD:
