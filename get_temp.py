@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 dth22_sensor = True
-WEATHER_UPLOAD = False
+#WEATHER_UPLOAD = False
+log_file = True
+#dth22_sensor = False
+WEATHER_UPLOAD = True
+#log_file = False
 
+import time
 import json
 import urllib2
 from config import Config
 from urllib import urlencode
 from time import sleep
+
 if dth22_sensor:
     import Adafruit_DHT
 
@@ -91,6 +97,11 @@ else:
     hum_float = float(float(hum.strip('%'))/100)
     dewpoint = float((hum_float**(1./8) * (112 + 0.9 * temp_c)) + (0.1 * temp_c) - 112)
 print "\nCurrent temperature and humidity in %s is: %s %s" % (location, temp_c, hum)
+
+if log_file:
+    fd = open('/home/pi/Desktop/log_temp.txt', 'a')
+    fd.write('\n'+time.strftime('%l:%M %p %Y-%b-%d: ')+str(temp_c))
+    fd.close
 
 # ============================================================================
 #  Read Weather Underground Configuration Parameters
