@@ -1,0 +1,138 @@
+Crear un fichero vacio con el nombre ssh en la raiz de la sd card tras grabar la iso de raspbian lite:
+https://www.raspberrypi.org/downloads/raspbian/
+2017-11-29-raspbian-stretch-lite.img
+
+Enable ssh:
+sudo update-rc.d ssh enable
+
+sudo apt-get update 
+sudo apt-get install git
+
+$ git config --global user.name "Alberto"
+$ git config --global user.email alberto.andres.alonso@gmail.com
+$ git config --global core.editor nano
+$ git config --list
+
+git clone https://github.com/albertcode/alberweatherstation
+git clone https://github.com/adafruit/Adafruit_Python_DHT.git
+cd Adafruit_Python_DHT
+Then we install python’s libraries
+
+sudo apt-get update
+sudo apt-get install build-essential python-dev python-openssl
+sudo python setup.py install
+
+
+sudo nano /etc/network/interfaces
+# interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+auto lo
+iface lo inet loopback
+
+iface eth0 inet manual
+
+allow-hotplug wlan0
+iface wlan0 inet manual
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+    
+sudo su
+wpa_passphrase vostok7 > /etc/wpa_supplicant/wpa_supplicant.conf
+#after execute this command put the vostok7 network password
+
+#Check file and remove password comment
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf 
+root@raspberrypi:/home/pi# cat /etc/wpa_supplicant/wpa_supplicant.conf
+# reading passphrase from stdin
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+        ssid="vostok7"
+        psk=46efa2e50d08f21ecb39ec8926714b487557d25a6910fd9150dda1503f7cfb99
+}
+
+pi@raspberrypi:~ $ nano /etc/dhcpcd.conf
+# A sample configuration for dhcpcd.
+# See dhcpcd.conf(5) for details.
+
+# Allow users of this group to interact with dhcpcd via the control socket.
+#controlgroup wheel
+
+# Inform the DHCP server of our hostname for DDNS.
+hostname
+
+# Use the hardware address of the interface for the Client ID.
+clientid
+# or
+# Use the same DUID + IAID as set in DHCPv6 for DHCPv4 ClientID as per RFC4361.
+# Some non-RFC compliant DHCP servers do not reply with this set.
+# In this case, comment out duid and enable clientid above.
+#duid
+
+# Persist interface configuration when dhcpcd exits.
+persistent
+
+# Rapid commit support.
+# Safe to enable by default because it requires the equivalent option set
+# on the server to actually work.
+option rapid_commit
+
+# A list of options to request from the DHCP server.
+option domain_name_servers, domain_name, domain_search, host_name
+option classless_static_routes
+# Most distributions have NTP support.
+option ntp_servers
+# Respect the network MTU. This is applied to DHCP routes.
+option interface_mtu
+
+# A ServerID is required by RFC2131.
+require dhcp_server_identifier
+
+# Generate Stable Private IPv6 Addresses instead of hardware based ones
+slaac private
+
+# Example static IP configuration:
+#interface eth0
+#static ip_address=192.168.0.10/24
+#static ip6_address=fd51:42f8:caae:d92e::ff/64
+#static routers=192.168.0.1
+#static domain_name_servers=192.168.0.1 8.8.8.8 fd51:42f8:caae:d92e::1
+
+# It is possible to fall back to a static IP if DHCP fails:
+# define static profile
+#profile static_eth0
+#static ip_address=192.168.1.23/24
+#static routers=192.168.1.1
+#static domain_name_servers=192.168.1.1
+
+# fallback to static profile on eth0
+#interface eth0
+#fallback static_eth0
+
+interface wlan0
+static ip_address=192.168.1.200/24
+static routers=192.168.1.1
+static domain_name_servers=8.8.8.8
+
+#reiniciar la raspberry
+shutdown -h now
+
+################################################################################
+# Programar tareas periodicas con crontab                                      #
+################################################################################
+# get_temp.py every 10 min
+# cic.py every 30min
+# diff between sudo crontab -e and just crontab e:
+# https://stackoverflow.com/questions/43237488/linux-difference-between-sudo-crontab-e-and-just-crontab-e
+
+sudo crontab -e
+*/10 * * * * /usr/bin/python /home/pi/alberweatherstation/get_temp.py
+*/30 * * * * /usr/bin/python /home/pi/alberweatherstation/cic.py
+
+
