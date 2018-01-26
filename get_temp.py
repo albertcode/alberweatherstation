@@ -99,7 +99,7 @@ else:
 print "\nCurrent temperature and humidity in %s is: %s %s" % (location, temp_c, hum)
 
 if log_file:
-    fd = open('/home/pi/Desktop/log_temp.txt', 'a')
+    fd = open('/home/pi/alberweatherstation/log_temp.txt', 'a')
     fd.write('\n'+time.strftime('%l:%M %p %Y-%b-%d: ')+str(temp_c))
     fd.close
 
