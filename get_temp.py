@@ -130,6 +130,7 @@ print('Station ID:', wu_station_id)
 
 # ========================================================
 # Upload the weather data to Weather Underground
+# PWS: https://www.wunderground.com/personal-weather-station/dashboard?ID=IGUADALA36&cm_ven=localwx_pwsdash#history
 # ========================================================
 WU_URL = "http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php"
 # is weather upload enabled (True)?
@@ -164,7 +165,8 @@ if WEATHER_UPLOAD:
 else:
     print("Skipping Weather Underground upload")
     
-    
+# API Info:
+# http://api.wunderground.com/api/cac064240e1597b3/conditions/q/pws:IGULAEST2.json    
 # action [action = updateraw]
 # ID [ID as registered by wunderground.com]
 # PASSWORD [PASSWORD registered with this ID]
