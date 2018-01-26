@@ -5,8 +5,8 @@ La url anterior tambi�n explica como instalar el servidor vcn pero no dice com
 hacer para que se arranque siempre que arranque la raspberry, para ello seguir esto:
 https://learn.adafruit.com/adafruit-raspberry-pi-lesson-7-remote-control-with-vnc/running-vncserver-at-startup
 
-3� Darle una ip fija a la raspberry (192.168.1.22)
-https://www.modmypi.com/blog/how-to-give-your-raspberry-pi-a-static-ip-address-update
+3� Darle una ip fija a la raspberry (192.168.1.200)
+https://elinux.org/Configuring_a_Static_IP_address_on_your_Raspberry_Pi
 
 4� Empezar a actualizar el sistema e instalar la infraestructura LAMP (linux apache mysql php-python-perl):
 

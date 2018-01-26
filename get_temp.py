@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+# encoding=utf8
+'''
+    File name: get_temp.py
+    Description: Get temperature from DHT22 sensor and upload the information to WeatherUnderground.
+    Python Version: 2.7.13
+'''
+__author__ = "Alberto Andrés"
+__license__ = "GPL"
+
 dth22_sensor = True
 #WEATHER_UPLOAD = False
 log_file = True
@@ -81,7 +90,8 @@ if dth22_sensor:
         n_retries += 1
         print 'Ret: ',n_retries
         sleep(1)
-
+    # correct DHT22 error
+    temp_c -= 0.5
     dewpoint = float((hum**(1./8) * (112 + 0.9 * temp_c)) + (0.1 * temp_c) - 112)
     
 else:
