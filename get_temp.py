@@ -120,7 +120,7 @@ if log_file:
 if log_gspread:
     # use creds to create a client to interact with the Google Drive API
     scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('alberWS-e51a8476d2f4.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/alberweatherstation/alberWS-e51a8476d2f4.json', scope)
     client = gspread.authorize(creds)
     # Find a workbook by name and open the first sheet
     # Make sure you use the right name here.
