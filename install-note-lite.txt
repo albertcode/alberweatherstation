@@ -135,4 +135,7 @@ sudo crontab -e
 */10 * * * * /usr/bin/python /home/pi/alberweatherstation/get_temp.py
 */30 * * * * /usr/bin/python /home/pi/alberweatherstation/cic.py
 
-
+################################################################################
+# Use google spreadsheet                                                       #
+################################################################################
+https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html
