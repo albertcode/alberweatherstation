@@ -126,7 +126,7 @@ if log_gspread:
     # Make sure you use the right name here.
     sheet = client.open("alberws").sheet1
     # insert a new row
-    row = [time.strftime('%l:%M %p %Y-%b-%d: '),str(temp_c),format(hum_float, '.2f')]
+    row = [time.strftime('%l:%M %p %Y-%b-%d: '),str(temp_c),format(hum, '.2f')]
     index = 2
     sheet.insert_row(row, index)
 
