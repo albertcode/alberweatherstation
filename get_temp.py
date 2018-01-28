@@ -14,13 +14,17 @@ log_file = True
 #dth22_sensor = False
 WEATHER_UPLOAD = True
 #log_file = False
+#log_gspread = False
+log_gspread = True
 
 import time
 import json
 import urllib2
+import gspread
 from config import Config
 from urllib import urlencode
 from time import sleep
+from oauth2client.service_account import ServiceAccountCredentials
 
 if dth22_sensor:
     import Adafruit_DHT
@@ -112,6 +116,19 @@ if log_file:
     fd = open('/home/pi/alberweatherstation/log_temp.txt', 'a')
     fd.write('\n'+time.strftime('%l:%M %p %Y-%b-%d: ')+str(temp_c))
     fd.close
+
+if log_gspread:
+    # use creds to create a client to interact with the Google Drive API
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('alberWS-e51a8476d2f4.json', scope)
+    client = gspread.authorize(creds)
+    # Find a workbook by name and open the first sheet
+    # Make sure you use the right name here.
+    sheet = client.open("alberws").sheet1
+    # insert a new row
+    row = [time.strftime('%l:%M %p %Y-%b-%d: '),str(temp_c),hum]
+    index = 2
+    sheet.insert_row(row, index)
 
 # ============================================================================
 #  Read Weather Underground Configuration Parameters
