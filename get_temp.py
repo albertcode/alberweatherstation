@@ -127,7 +127,7 @@ if log_gspread:
     # Make sure you use the right name here.
     sheet = client.open("alberws").sheet1
     # insert a new row
-    locale.setlocale(locale.LC_TIME, "es_ES") # spain local time
+    locale.setlocale(locale.LC_TIME, "es_ES.UTF-8") # spain local time
     row = [time.strftime('%Y-%m-%d: %p %l:%M'),format(temp_c,'.2f'),format(hum, '.2f')]
     index = 2
     sheet.insert_row(row, index)
