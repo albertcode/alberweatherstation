@@ -14,10 +14,11 @@ log_file = True
 #dth22_sensor = False
 WEATHER_UPLOAD = True
 #log_file = False
-log_gspread = False
-#log_gspread = True
+#log_gspread = False
+log_gspread = True
 
 import time
+import locale
 import json
 import urllib2
 import gspread
@@ -126,7 +127,8 @@ if log_gspread:
     # Make sure you use the right name here.
     sheet = client.open("alberws").sheet1
     # insert a new row
-    row = [time.strftime('%l:%M %p %Y-%b-%d: '),format(temp_c,'.2f'),format(hum, '.2f')]
+    locale.setlocale(locale.LC_TIME, "es_ES") # spain local time
+    row = [time.strftime('%Y-%m-%d: %p %l:%M'),format(temp_c,'.2f'),format(hum, '.2f')]
     index = 2
     sheet.insert_row(row, index)
 
