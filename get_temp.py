@@ -74,7 +74,7 @@ def get_local_date():
 def get_local_time():
     # get local time with UTC timezone offset
     hh = str(int(time.strftime('%H')) + UTC_offset)
-    if (hh = '24'):
+    if (hh == '24'):
         hh = '00'
     mm = time.strftime('%M')
     local_time = hh + ':' + mm
