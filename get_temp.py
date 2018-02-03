@@ -24,7 +24,9 @@ import gspread
 from config import Config
 from urllib import urlencode
 from time import sleep
-from oauth2client.service_account import ServiceAccountCredentials
+from oauth2client.service_account import 
+
+UTC_offset = 1
 
 if dth22_sensor:
     import Adafruit_DHT
@@ -58,6 +60,23 @@ def read_rain_from_pws(parsed_json):
     precip_1hr_in = parsed_json['current_observation']['precip_1hr_in']
     precip_today_in = parsed_json['current_observation']['precip_today_in']
     return precip_1hr_in, precip_today_in
+
+def get_local_date():
+    # get local date with UTC timezone offset
+    if (time.strftime('%H') == '23'):
+        day = str(int(time.strftime('%d')) + UTC_offset)
+    else:
+        day = time.strftime('%d')
+        
+    local_date = time.strftime('%Y-%m-') + day
+    return local_date
+
+def get_local_time():
+    # get local time with UTC timezone offset
+    hh = str(int(time.strftime('%H')) + UTC_offset)
+    mm = time.strftime('%M')
+    local_time = hh + ':' + mm
+    return local_time
     
 # ============================================================================
 #  Read Weather conditions from WU stations or DTH22 sensor
@@ -127,7 +146,7 @@ if log_gspread:
     sheet = client.open("alberws").sheet1
     # insert a new row
     time_str = time.strftime('%Y-%m-%d: %p %X')
-    row = [time_str,format(temp_c,'.2f'),format(hum, '.2f')]
+    row = [get_local_date(),get_local_time(),format(temp_c,'.2f'),format(hum, '.2f')]
     index = 2
     sheet.insert_row(row, index)
 
