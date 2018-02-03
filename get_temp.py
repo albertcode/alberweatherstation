@@ -24,7 +24,7 @@ import gspread
 from config import Config
 from urllib import urlencode
 from time import sleep
-from oauth2client.service_account import 
+from oauth2client.service_account import ServiceAccountCredentials
 
 UTC_offset = 1
 
