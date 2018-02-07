@@ -2,7 +2,8 @@
 # encoding=utf8
 '''
     File name: get_temp.py
-    Description: Get temperature from DHT22 sensor and upload the information to WeatherUnderground.
+    Description: Get temperature from DHT22 sensor and upload the information to
+                 WeatherUnderground and Google Spreadsheet.
     Python Version: 2.7.13
 '''
 __author__ = "Alberto Andrés"
@@ -87,6 +88,7 @@ alb_key = 'cac064240e1597b3'
 pws_1 = 'IGULAEST2'
 pws_2 = 'IGUADALA26'
 pws_3 = 'IMARCHAM2'
+
 json_pws_1 = parse_pws_conditions_json(pws_1,alb_key)
 json_pws_2 = parse_pws_conditions_json(pws_2,alb_key)
 json_pws_3 = parse_pws_conditions_json(pws_3,alb_key)
@@ -95,6 +97,25 @@ location = json_pws_1['current_observation']['observation_location']['city']
 pressure_mb = json_pws_1['current_observation']['pressure_mb']
 wind_dir, windspeedmph, windgustmph = read_wind_from_pws(json_pws_1)
 rainin, dailyrainin = read_rain_from_pws(json_pws_1)
+
+# ============================================================================
+#  Read Weather Underground Configuration Parameters
+# ============================================================================
+print("\n Initializing Weather Underground configuration\n")
+wu_station_id = Config.STATION_ID
+wu_station_key = Config.STATION_KEY
+if (wu_station_id is None) or (wu_station_key is None):
+    print("Missing values from the Weather Underground configuration file\n")
+    sys.exit(1)
+
+# we made it this far, so it must have worked...
+print("Successfully read Weather Underground configuration values")
+print('Station ID:', wu_station_id)
+# print('Station key:', wu_station_key)
+
+# ============================================================================
+#  Initialise global variables
+# ============================================================================
 hum = None
 temp_c = None
 n_retries = 0
@@ -117,11 +138,12 @@ if dth22_sensor:
         sleep(1)
     # correct DHT22 error
     temp_c -= 0.5
-    dewpoint = float((hum**(1./8) * (112 + 0.9 * temp_c)) + (0.1 * temp_c) - 112)
+    dewpoint = float(((hum/100)**(1./8) * (112 + 0.9 * temp_c)) + (0.1 * temp_c) - 112)
+    json_my_pws = parse_pws_conditions_json(wu_station_id,alb_key)
+    location = json_my_pws['current_observation']['observation_location']['city'] 
     
 else:
     # DTH22 sensor is disabled
-
     hum = json_pws_1['current_observation']['relative_humidity']
     temp_c_pws_1 = read_temp_c_from_pws(json_pws_1)
     temp_c_pws_2 = read_temp_c_from_pws(json_pws_2)
@@ -131,24 +153,9 @@ else:
     # Calculate dewpoint as hum^(1/8) * (112 + 0.9 * temp_c) + (0.1 * temp_c - 112)
     hum_float = float(float(hum.strip('%'))/100)
     dewpoint = float((hum_float**(1./8) * (112 + 0.9 * temp_c)) + (0.1 * temp_c) - 112)
-print "\nCurrent temperature and humidity in %s is: %s %s" % (location, temp_c, hum)
+print "\nCurrent temperature and humidity in %s is:\n %s %s" % (location, temp_c, hum)
 
 
-
-# ============================================================================
-#  Read Weather Underground Configuration Parameters
-# ============================================================================
-print("\n\bInitializing Weather Underground configuration\n")
-wu_station_id = Config.STATION_ID
-wu_station_key = Config.STATION_KEY
-if (wu_station_id is None) or (wu_station_key is None):
-    print("Missing values from the Weather Underground configuration file\n")
-    sys.exit(1)
-
-# we made it this far, so it must have worked...
-print("Successfully read Weather Underground configuration values")
-print('Station ID:', wu_station_id)
-# print('Station key:', wu_station_key)
 
 # ========================================================
 # Upload the weather data to Weather Underground
@@ -188,14 +195,22 @@ if WEATHER_UPLOAD:
         print("Exception:", sys.exc_info()[0], SLASH_N)
 else:
     print("Skipping Weather Underground upload")
-    
+  
+# ============================================================================
+#  Write the temperature and humidity to log_temp.txt
+# ============================================================================  
 if log_file:
+    print("\n --> Writing data to log_temp.txt...\n")
     fd = open('/home/pi/alberweatherstation/log_temp.txt', 'a')
     fd.write('\n'+time.strftime('%l:%M %p %Y-%b-%d: ')+str(temp_c).replace(".",","))
     fd.close
 
+# ============================================================================
+#  Upload temperature and humidity to the Google Spreadsheet
+# ============================================================================
 if log_gspread:
     # use creds to create a client to interact with the Google Drive API
+    print("\n --> Uploading data to Google Spreadsheet...\n")
     scope = ['https://spreadsheets.google.com/feeds']
     creds = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/alberweatherstation/alberWS-e51a8476d2f4.json', scope)
     client = gspread.authorize(creds)
