@@ -200,7 +200,7 @@ else:
 #  Write the temperature and humidity to log_temp.txt
 # ============================================================================  
 if log_file:
-    print("\n --> Writing data to log_temp.txt...\n")
+    print("\n --> Writing data to log_temp.txt...")
     fd = open('/home/pi/alberweatherstation/log_temp.txt', 'a')
     fd.write('\n'+time.strftime('%l:%M %p %Y-%b-%d: ')+str(temp_c).replace(".",","))
     fd.close
