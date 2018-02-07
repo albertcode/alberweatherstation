@@ -133,24 +133,7 @@ else:
     dewpoint = float((hum_float**(1./8) * (112 + 0.9 * temp_c)) + (0.1 * temp_c) - 112)
 print "\nCurrent temperature and humidity in %s is: %s %s" % (location, temp_c, hum)
 
-if log_file:
-    fd = open('/home/pi/alberweatherstation/log_temp.txt', 'a')
-    fd.write('\n'+time.strftime('%l:%M %p %Y-%b-%d: ')+str(temp_c))
-    fd.close
 
-if log_gspread:
-    # use creds to create a client to interact with the Google Drive API
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/alberweatherstation/alberWS-e51a8476d2f4.json', scope)
-    client = gspread.authorize(creds)
-    # Find a workbook by name and open the first sheet
-    # Make sure you use the right name here.
-    sheet = client.open("alberws").sheet1
-    # insert a new row
-    time_str = time.strftime('%Y-%m-%d: %p %X')
-    row = [get_local_date(),get_local_time(),format(temp_c,'.2f'),format(hum, '.2f')]
-    index = 2
-    sheet.insert_row(row, index)
 
 # ============================================================================
 #  Read Weather Underground Configuration Parameters
@@ -170,6 +153,8 @@ print('Station ID:', wu_station_id)
 # ========================================================
 # Upload the weather data to Weather Underground
 # PWS: https://www.wunderground.com/personal-weather-station/dashboard?ID=IGUADALA36&cm_ven=localwx_pwsdash#history
+# API Info:
+# http://api.wunderground.com/api/cac064240e1597b3/conditions/q/pws:IGULAEST2.json
 # ========================================================
 WU_URL = "http://weatherstation.wunderground.com/weatherstation/updateweatherstation.php"
 # is weather upload enabled (True)?
@@ -204,22 +189,23 @@ if WEATHER_UPLOAD:
 else:
     print("Skipping Weather Underground upload")
     
-# API Info:
-# http://api.wunderground.com/api/cac064240e1597b3/conditions/q/pws:IGULAEST2.json    
-# action [action = updateraw]
-# ID [ID as registered by wunderground.com]
-# PASSWORD [PASSWORD registered with this ID]
-# dateutc - [YYYY-MM-DD HH:MM:SS (mysql format)]
-# winddir - [0-360]
-# windspeedmph - [mph]
-# windgustmph - [windgustmph ]
-# humidity - [%]
-# tempf - [temperature F]
-# rainin - [rain in]
-# dailyrainin - [daily rain in accumulated]
-# baromin - [barom in]
-# dewptf- [dewpoint F]
-# weather - [text] -- metar style (+RA) 
-# clouds - [text] -- SKC, FEW, SCT, BKN, OVC
-# softwaretype - [text] ie: vws or weatherdisplay
+if log_file:
+    fd = open('/home/pi/alberweatherstation/log_temp.txt', 'a')
+    fd.write('\n'+time.strftime('%l:%M %p %Y-%b-%d: ')+str(temp_c).replace(".",","))
+    fd.close
+
+if log_gspread:
+    # use creds to create a client to interact with the Google Drive API
+    scope = ['https://spreadsheets.google.com/feeds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('/home/pi/alberweatherstation/alberWS-e51a8476d2f4.json', scope)
+    client = gspread.authorize(creds)
+    # Find a workbook by name and open the first sheet
+    # Make sure you use the right name here.
+    sheet = client.open("alberws").sheet1
+    # insert a new row
+    time_str = time.strftime('%Y-%m-%d: %p %X')
+    row = [get_local_date(),get_local_time(),format(temp_c,'.2f').replace(".",","),format(hum, '.2f').replace(".",",")]
+    index = 2
+    sheet.insert_row(row, index)
+    
 
