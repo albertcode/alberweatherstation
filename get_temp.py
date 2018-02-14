@@ -219,7 +219,7 @@ if log_gspread:
     sheet = client.open("alberws").sheet1
     # insert a new row
     time_str = time.strftime('%Y-%m-%d: %p %X')
-    row = [get_local_date(),get_local_time(),format(temp_c,'.2f'),format(hum, '.2f')]
+    row = [get_local_date(),get_local_time(),temp_c,hum]
     index = 2
     sheet.insert_row(row, index)
     
