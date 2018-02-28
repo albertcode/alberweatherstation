@@ -15,8 +15,8 @@ log_file = True
 #dth22_sensor = False
 WEATHER_UPLOAD = True
 #log_file = False
-#log_gspread = False
-log_gspread = True
+log_gspread = False
+#log_gspread = True
 
 import os
 import time
