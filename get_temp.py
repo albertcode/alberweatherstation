@@ -18,6 +18,7 @@ WEATHER_UPLOAD = True
 #log_gspread = False
 log_gspread = True
 
+import os
 import time
 import json
 import urllib2
@@ -80,14 +81,14 @@ def get_local_time():
     mm = time.strftime('%M')
     local_time = hh + ':' + mm
     return local_time
-    
+
 # ============================================================================
 #  Read Weather conditions from WU stations or DTH22 sensor
 # ============================================================================
-alb_key = 'cac064240e1597b3'
-pws_1 = 'IGULAEST2'
-pws_2 = 'IGUADALA26'
-pws_3 = 'IMARCHAM2'
+alb_key = Config.alb_key
+pws_1 = Config.pws_1
+pws_2 = Config.pws_2
+pws_3 = Config.pws_3
 
 json_pws_1 = parse_pws_conditions_json(pws_1,alb_key)
 json_pws_2 = parse_pws_conditions_json(pws_2,alb_key)
