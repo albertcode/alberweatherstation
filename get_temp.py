@@ -91,10 +91,7 @@ pws_2 = Config.pws_2
 pws_3 = Config.pws_3
 
 json_pws_1 = parse_pws_conditions_json(pws_1,alb_key)
-json_pws_2 = parse_pws_conditions_json(pws_2,alb_key)
-json_pws_3 = parse_pws_conditions_json(pws_3,alb_key)
 
-location = json_pws_1['current_observation']['observation_location']['city']
 pressure_mb = json_pws_1['current_observation']['pressure_mb']
 wind_dir, windspeedmph, windgustmph = read_wind_from_pws(json_pws_1)
 rainin, dailyrainin = read_rain_from_pws(json_pws_1)
@@ -144,6 +141,10 @@ if dth22_sensor:
     location = json_my_pws['current_observation']['observation_location']['city'] 
     
 else:
+    json_pws_2 = parse_pws_conditions_json(pws_2,alb_key)
+    json_pws_3 = parse_pws_conditions_json(pws_3,alb_key)
+
+    location = json_pws_1['current_observation']['observation_location']['city']
     # DTH22 sensor is disabled
     hum = json_pws_1['current_observation']['relative_humidity']
     temp_c_pws_1 = read_temp_c_from_pws(json_pws_1)
